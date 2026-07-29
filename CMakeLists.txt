@@ -1,21 +1,31 @@
-cmake_minimum_required(VERSION 3.19)
-project(PersonalFinanceManager LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.16)
+project(PersonalFinanceManager VERSION 0.1 LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-qt_standard_project_setup()
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
 
-qt_add_executable(PersonalFinanceManager
-    main.cpp
+find_package(Qt6 REQUIRED COMPONENTS Widgets)
+
+set(SOURCES
+    src/main.cpp
+    src/MainWindow.cpp
+    src/Transaction.cpp
 )
 
-target_link_libraries(PersonalFinanceManager
-    PRIVATE
-        Qt::Core
+set(HEADERS
+    include/MainWindow.h
+    include/Transaction.h
 )
 
-install(TARGETS PersonalFinanceManager
-    BUNDLE  DESTINATION .
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+add_executable(PersonalFinanceManager
+    ${SOURCES}
+    ${HEADERS}
 )
+
+target_include_directories(PersonalFinanceManager PRIVATE include)
+
+target_link_libraries(PersonalFinanceManager PRIVATE Qt6::Widgets)
