@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "TransactionDialog.h"
 
 #include <QWidget>
 #include <QVBoxLayout>
@@ -77,38 +78,34 @@ void MainWindow::setupUi()
 
 void MainWindow::onAddIncomeClicked()
 {
-    // Placeholder: this will open an "Add Income" dialog in Phase 2
-    // and push a new Transaction into m_transactions, then call refreshDashboard().
+    openAddDialog(TransactionType::Income);
 }
 
 void MainWindow::onAddExpenseClicked()
 {
-    // Placeholder: this will open an "Add Expense" dialog in Phase 2
-    // and push a new Transaction into m_transactions, then call refreshDashboard().
+    openAddDialog(TransactionType::Expense);
+}
+
+void MainWindow::openAddDialog(TransactionType type)
+{
+    TransactionDialog dialog(type, this);
+    if (dialog.exec() == QDialog::Accepted) {
+        m_financeManager.addTransaction(dialog.resultTransaction());
+        refreshDashboard();
+    }
 }
 
 void MainWindow::refreshDashboard()
 {
-    double income = 0.0;
-    double expense = 0.0;
-
-    for (const Transaction &t : m_transactions) {
-        if (t.type() == TransactionType::Income)
-            income += t.amount();
-        else
-            expense += t.amount();
-    }
-
-    double balance = income - expense;
-
-    m_balanceLabel->setText(QString("Balance: $%1").arg(balance, 0, 'f', 2));
-    m_incomeLabel->setText(QString("Income: $%1").arg(income, 0, 'f', 2));
-    m_expenseLabel->setText(QString("Expenses: $%1").arg(expense, 0, 'f', 2));
+    m_balanceLabel->setText(QString("Balance: $%1").arg(m_financeManager.balance(), 0, 'f', 2));
+    m_incomeLabel->setText(QString("Income: $%1").arg(m_financeManager.totalIncome(), 0, 'f', 2));
+    m_expenseLabel->setText(QString("Expenses: $%1").arg(m_financeManager.totalExpense(), 0, 'f', 2));
 
     // Refresh table
-    m_transactionTable->setRowCount(m_transactions.size());
-    for (int row = 0; row < m_transactions.size(); ++row) {
-        const Transaction &t = m_transactions[row];
+    const QVector<Transaction> &transactions = m_financeManager.transactions();
+    m_transactionTable->setRowCount(transactions.size());
+    for (int row = 0; row < transactions.size(); ++row) {
+        const Transaction &t = transactions[row];
         m_transactionTable->setItem(row, 0, new QTableWidgetItem(t.date().toString(Qt::ISODate)));
         m_transactionTable->setItem(row, 1, new QTableWidgetItem(t.typeToString()));
         m_transactionTable->setItem(row, 2, new QTableWidgetItem(t.category()));

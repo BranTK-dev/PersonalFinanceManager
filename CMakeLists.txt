@@ -14,11 +14,15 @@ set(SOURCES
     src/main.cpp
     src/MainWindow.cpp
     src/Transaction.cpp
+    src/FinanceManager.cpp
+    src/TransactionDialog.cpp
 )
 
 set(HEADERS
     include/MainWindow.h
     include/Transaction.h
+    include/FinanceManager.h
+    include/TransactionDialog.h
 )
 
 add_executable(PersonalFinanceManager

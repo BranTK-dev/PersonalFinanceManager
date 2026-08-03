@@ -2,8 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QVector>
 #include "Transaction.h"
+#include "FinanceManager.h"
 
 QT_BEGIN_NAMESPACE
 class QTableWidget;
@@ -26,6 +26,7 @@ private slots:
 private:
     void setupUi();
     void refreshDashboard();
+    void openAddDialog(TransactionType type);
 
     // Widgets
     QLabel *m_balanceLabel;
@@ -35,8 +36,8 @@ private:
     QPushButton *m_addIncomeButton;
     QPushButton *m_addExpenseButton;
 
-    // Data (temporary in-memory store until FinanceManager is wired in)
-    QVector<Transaction> m_transactions;
+    // Business logic
+    FinanceManager m_financeManager;
 };
 
 #endif // MAINWINDOW_H
