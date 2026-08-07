@@ -8,7 +8,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Charts)
 
 set(SOURCES
     src/main.cpp
@@ -16,6 +16,8 @@ set(SOURCES
     src/Transaction.cpp
     src/FinanceManager.cpp
     src/TransactionDialog.cpp
+    src/FileManager.cpp
+    src/StatisticsDialog.cpp
 )
 
 set(HEADERS
@@ -23,6 +25,8 @@ set(HEADERS
     include/Transaction.h
     include/FinanceManager.h
     include/TransactionDialog.h
+    include/FileManager.h
+    include/StatisticsDialog.h
 )
 
 add_executable(PersonalFinanceManager
@@ -32,4 +36,4 @@ add_executable(PersonalFinanceManager
 
 target_include_directories(PersonalFinanceManager PRIVATE include)
 
-target_link_libraries(PersonalFinanceManager PRIVATE Qt6::Widgets)
+target_link_libraries(PersonalFinanceManager PRIVATE Qt6::Widgets Qt6::Charts)

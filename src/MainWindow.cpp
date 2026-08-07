@@ -1,5 +1,7 @@
 #include "MainWindow.h"
 #include "TransactionDialog.h"
+#include "FileManager.h"
+#include "StatisticsDialog.h"
 
 #include <QWidget>
 #include <QVBoxLayout>
@@ -12,6 +14,7 @@
 #include <QHeaderView>
 #include <QFont>
 #include <QMessageBox>
+#include <QStatusBar>
 
 // Column 0's item stores the transaction id in Qt::UserRole so edit/delete
 // know which transaction a row refers to, even while a search/filter is active.
@@ -21,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     setupUi();
+    loadData();
     updateTotals();
     applyFilters();
 }
@@ -65,6 +69,7 @@ void MainWindow::setupUi()
     m_addExpenseButton = new QPushButton("Add Expense", central);
     m_editButton = new QPushButton("Edit", central);
     m_deleteButton = new QPushButton("Delete", central);
+    m_statisticsButton = new QPushButton("Statistics", central);
 
     m_editButton->setEnabled(false);
     m_deleteButton->setEnabled(false);
@@ -73,12 +78,14 @@ void MainWindow::setupUi()
     buttonLayout->addWidget(m_addExpenseButton);
     buttonLayout->addWidget(m_editButton);
     buttonLayout->addWidget(m_deleteButton);
+    buttonLayout->addWidget(m_statisticsButton);
     buttonLayout->addStretch();
 
     connect(m_addIncomeButton, &QPushButton::clicked, this, &MainWindow::onAddIncomeClicked);
     connect(m_addExpenseButton, &QPushButton::clicked, this, &MainWindow::onAddExpenseClicked);
     connect(m_editButton, &QPushButton::clicked, this, &MainWindow::onEditClicked);
     connect(m_deleteButton, &QPushButton::clicked, this, &MainWindow::onDeleteClicked);
+    connect(m_statisticsButton, &QPushButton::clicked, this, &MainWindow::onStatisticsClicked);
 
     // --- Search / filter row ---
     QHBoxLayout *searchLayout = new QHBoxLayout();
@@ -129,6 +136,7 @@ void MainWindow::openAddDialog(TransactionType type)
         m_financeManager.addTransaction(dialog.resultTransaction());
         updateTotals();
         applyFilters();
+        saveData();
     }
 }
 
@@ -149,6 +157,7 @@ void MainWindow::onEditClicked()
         m_financeManager.updateTransaction(dialog.resultTransaction());
         updateTotals();
         applyFilters();
+        saveData();
     }
 }
 
@@ -177,6 +186,7 @@ void MainWindow::onDeleteClicked()
         m_financeManager.removeTransaction(id);
         updateTotals();
         applyFilters();
+        saveData();
     }
 }
 
@@ -275,4 +285,29 @@ void MainWindow::populateTable(const QVector<Transaction> &list)
     // Selection was cleared by the repopulate, so disable Edit/Delete until something is picked again.
     m_editButton->setEnabled(false);
     m_deleteButton->setEnabled(false);
+}
+
+void MainWindow::onStatisticsClicked()
+{
+    StatisticsDialog dialog(m_financeManager, this);
+    dialog.exec();
+}
+
+void MainWindow::loadData()
+{
+    QVector<Transaction> loaded;
+    if (FileManager::loadFromFile(FileManager::defaultFilePath(), loaded)) {
+        m_financeManager.setTransactions(loaded);
+        statusBar()->showMessage(QString("Loaded %1 transaction(s) from disk").arg(loaded.size()), 3000);
+    } else {
+        // No file yet (first run) or it couldn't be read, either way, start with an empty ledger.
+        statusBar()->showMessage("Starting with no saved data", 3000);
+    }
+}
+
+void MainWindow::saveData()
+{
+    if (!FileManager::saveToFile(FileManager::defaultFilePath(), m_financeManager.transactions())) {
+        statusBar()->showMessage("Warning: could not save data to disk", 5000);
+    }
 }

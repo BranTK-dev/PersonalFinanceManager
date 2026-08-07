@@ -29,10 +29,13 @@ private slots:
     void onSelectionChanged();
     void onSearchTextChanged(const QString &text);
     void onFilterChanged(int index);
+    void onStatisticsClicked();
 
 private:
     void setupUi();
     void openAddDialog(TransactionType type);
+    void loadData();
+    void saveData();
 
     // Splitting the old refreshDashboard() into two steps:
     // totals always reflect ALL transactions, the table reflects the current search/filter.
@@ -53,6 +56,7 @@ private:
     QPushButton *m_addExpenseButton;
     QPushButton *m_editButton;
     QPushButton *m_deleteButton;
+    QPushButton *m_statisticsButton;
 
     // Widgets - search/filter
     QLineEdit *m_searchEdit;
