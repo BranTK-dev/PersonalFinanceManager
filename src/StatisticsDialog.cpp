@@ -7,11 +7,9 @@
 #include <QHeaderView>
 #include <QFont>
 #include <QMap>
-
-#include <QtCharts/QChart>
-#include <QtCharts/QChartView>
-#include <QtCharts/QPieSeries>
-#include <QtCharts/QPieSlice>
+#include <QProgressBar>
+#include <QWidget>
+#include <QScrollArea>
 
 StatisticsDialog::StatisticsDialog(const FinanceManager &financeManager, QWidget *parent)
     : QDialog(parent), m_financeManager(financeManager)

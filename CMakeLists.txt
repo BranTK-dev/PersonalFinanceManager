@@ -29,10 +29,21 @@ set(HEADERS
     include/StatisticsDialog.h
 )
 
+set(RESOURCES
+    resources/resources.qrc
+)
+
 add_executable(PersonalFinanceManager
     ${SOURCES}
     ${HEADERS}
+    ${RESOURCES}
 )
+
+# The .rc file sets the icon on the .exe itself and in the Windows taskbar.
+# Only added on Windows, other platforms don't use .rc files.
+if(WIN32)
+    target_sources(PersonalFinanceManager PRIVATE resources/app_icon.rc)
+endif()
 
 target_include_directories(PersonalFinanceManager PRIVATE include)
 
