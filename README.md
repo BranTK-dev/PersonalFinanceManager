@@ -75,7 +75,7 @@ Transactions are stored in `data/transactions.json`, created automatically on fi
 - [x] Edit, delete, search, filter
 - [x] JSON persistence, statistics, expense chart
 - [x] App icon
-- [ ] Dark mode
+- [x] Dark mode
 
 ## Screenshots
 
