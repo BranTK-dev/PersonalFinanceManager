@@ -1,4 +1,5 @@
 #include "StatisticsDialog.h"
+#include "ThemeManager.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -7,9 +8,11 @@
 #include <QHeaderView>
 #include <QFont>
 #include <QMap>
-#include <QProgressBar>
-#include <QWidget>
-#include <QScrollArea>
+
+#include <QtCharts/QChart>
+#include <QtCharts/QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
 
 StatisticsDialog::StatisticsDialog(const FinanceManager &financeManager, QWidget *parent)
     : QDialog(parent), m_financeManager(financeManager)
@@ -107,6 +110,10 @@ void StatisticsDialog::buildExpenseChart()
     chart->setTitle("Expenses by Category");
     chart->legend()->setVisible(true);
     chart->legend()->setAlignment(Qt::AlignBottom);
+
+    // Match whichever theme the app is currently using, otherwise a white chart
+    // ends up sitting inside a dark window (or vice versa) and looks broken.
+    chart->setTheme(ThemeManager::isDarkModeEnabled() ? QChart::ChartThemeDark : QChart::ChartThemeLight);
 
     QChartView *chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);

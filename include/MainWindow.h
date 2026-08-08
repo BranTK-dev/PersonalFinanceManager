@@ -30,6 +30,7 @@ private slots:
     void onSearchTextChanged(const QString &text);
     void onFilterChanged(int index);
     void onStatisticsClicked();
+    void onToggleDarkMode(bool checked);
 
 private:
     void setupUi();

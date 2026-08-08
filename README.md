@@ -79,14 +79,17 @@ Transactions are stored in `data/transactions.json`, created automatically on fi
 
 ## Screenshots
 
-<!--
-Add screenshots here once you've taken them. Suggested shots:
-- Main dashboard with a few sample transactions
-- The Add Income / Add Expense dialog
-- Search or filter in action
-- The Statistics dialog with the pie chart
--->
+**Dashboard**
+![Dashboard screenshot](screenshots/dashboard.png)
 
+**Add Expense**
+![Add Expense dialog](screenshots/add-expense.png)
+
+**Statistics**
+![Statistics dialog with category breakdown and expense chart](screenshots/statistics.png)
+
+**Dark Mode**
+![Dashboard in dark mode](screenshots/dark-mode.png)
 ## License
 
 This project is available for personal and educational use. Feel free to fork it and adapt it for your own portfolio.

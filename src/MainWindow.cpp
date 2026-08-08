@@ -2,6 +2,7 @@
 #include "TransactionDialog.h"
 #include "FileManager.h"
 #include "StatisticsDialog.h"
+#include "ThemeManager.h"
 
 #include <QWidget>
 #include <QVBoxLayout>
@@ -15,6 +16,9 @@
 #include <QFont>
 #include <QMessageBox>
 #include <QStatusBar>
+#include <QMenuBar>
+#include <QMenu>
+#include <QAction>
 
 // Column 0's item stores the transaction id in Qt::UserRole so edit/delete
 // know which transaction a row refers to, even while a search/filter is active.
@@ -37,6 +41,13 @@ void MainWindow::setupUi()
 {
     setWindowTitle("Personal Finance Manager");
     resize(900, 600);
+
+    // --- Menu bar: View > Dark Mode ---
+    QMenu *viewMenu = menuBar()->addMenu("View");
+    QAction *darkModeAction = viewMenu->addAction("Dark Mode");
+    darkModeAction->setCheckable(true);
+    darkModeAction->setChecked(ThemeManager::isDarkModeEnabled());
+    connect(darkModeAction, &QAction::toggled, this, &MainWindow::onToggleDarkMode);
 
     QWidget *central = new QWidget(this);
     setCentralWidget(central);
@@ -268,6 +279,13 @@ void MainWindow::applyFilters()
 
 void MainWindow::populateTable(const QVector<Transaction> &list)
 {
+    // Clear selection *before* rebuilding rows. This properly fires itemSelectionChanged
+    // (via onSelectionChanged) when there was a previous selection, keeping Edit/Delete
+    // button state in sync with the table. Just disabling the buttons by hand here caused a bug:
+    // if a single remaining row stayed selected across a refresh, Qt saw no selection change,
+    // so the buttons never got re-enabled even though the row still looked highlighted.
+    m_transactionTable->clearSelection();
+
     m_transactionTable->setRowCount(list.size());
     for (int row = 0; row < list.size(); ++row) {
         const Transaction &t = list[row];
@@ -281,16 +299,17 @@ void MainWindow::populateTable(const QVector<Transaction> &list)
         m_transactionTable->setItem(row, 3, new QTableWidgetItem(t.description()));
         m_transactionTable->setItem(row, 4, new QTableWidgetItem(QString::number(t.amount(), 'f', 2)));
     }
-
-    // Selection was cleared by the repopulate, so disable Edit/Delete until something is picked again.
-    m_editButton->setEnabled(false);
-    m_deleteButton->setEnabled(false);
 }
 
 void MainWindow::onStatisticsClicked()
 {
     StatisticsDialog dialog(m_financeManager, this);
     dialog.exec();
+}
+
+void MainWindow::onToggleDarkMode(bool checked)
+{
+    ThemeManager::setDarkModeEnabled(checked);
 }
 
 void MainWindow::loadData()

@@ -18,6 +18,7 @@ set(SOURCES
     src/TransactionDialog.cpp
     src/FileManager.cpp
     src/StatisticsDialog.cpp
+    src/ThemeManager.cpp
 )
 
 set(HEADERS
@@ -27,6 +28,7 @@ set(HEADERS
     include/TransactionDialog.h
     include/FileManager.h
     include/StatisticsDialog.h
+    include/ThemeManager.h
 )
 
 set(RESOURCES
