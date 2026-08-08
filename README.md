@@ -1,166 +1,92 @@
 # Personal Finance Manager
 
-A desktop application built with **C++** and **Qt 6 Widgets** that helps users manage their personal finances by tracking income and expenses, monitoring account balances, and viewing financial statistics.
+A desktop personal finance app built in C++ with Qt Widgets. Track income and expenses, search and filter transactions, edit or delete records, and see a breakdown of where your money's going, all stored locally, no accounts or servers involved.
 
----
+Built as a portfolio project to get hands-on with modern C++, object-oriented design, GUI development, and a proper Git workflow.
 
-## Preview
-
-> 🚧 Project currently under development.
-
-Screenshots will be added as features are completed.
-
----
+![Dashboard screenshot](screenshots/dashboard.png)
 
 ## Features
 
-### Dashboard
-- View current balance
-- View total income
-- View total expenses
-- View total number of transactions
+- **Dashboard** — running balance, total income, and total expenses at a glance
+- **Add income / add expense** — quick-entry dialogs with category, description, amount, and date
+- **Transaction history** — a sortable table of everything you've logged
+- **Edit & delete** — update or remove any transaction, with a confirmation prompt before deleting
+- **Search & filter** — search by description or category, filter by income/expense
+- **Statistics** — category breakdown table plus a pie chart of expenses by category
+- **Local storage** — everything saves automatically to a JSON file on disk, and reloads on the next launch
+- **Custom app icon** — because it should look like a real app, not a random `.exe`
 
-### Transaction Management
-- Add income
-- Add expenses
-- Edit transactions
-- Delete transactions
+## Tech Stack
 
-### Transaction History
-- View all recorded transactions
-- Search transactions
-- Filter by category or type
+- **C++17**
+- **Qt 6** (Widgets + Charts)
+- **CMake** for the build
+- **JSON** for local data storage (via Qt's `QJsonDocument`)
+- **Git / GitHub** for version control
 
-### Statistics
-- Current balance
-- Total income
-- Total expenses
-- Largest expense
-- Largest income
-- Monthly spending summary
-
-### Data Storage
-- Save transactions locally
-- Automatically load saved data on startup
-
----
-
-## Technologies
-
-- C++
-- Qt 6 (Qt Widgets)
-- CMake
-- Git
-- GitHub
-
----
-
-## Project Structure
+## Architecture
 
 ```
-PersonalFinanceManager/
-│
-├── src/
-│
-├── include/
-│
-├── resources/
-│
-├── screenshots/
-│
-├── README.md
-├── .gitignore
-└── CMakeLists.txt
+include/            Header files
+  Transaction.h        Data model for a single income/expense record
+  FinanceManager.h      Business logic: totals, search, filtering, CRUD
+  FileManager.h          Save/load transactions to/from JSON
+  TransactionDialog.h  Add/edit dialog, shared between income and expense
+  StatisticsDialog.h    Category breakdown + expense pie chart
+  MainWindow.h            Main application window
+
+src/                Implementation files (mirrors include/)
+
+resources/          App icon assets (.ico, .png, .qrc)
+data/               transactions.json lives here at runtime (gitignored, it's your data, not project code)
+screenshots/        App screenshots for this README
 ```
 
----
+The split follows a simple separation of concerns: `Transaction` is a plain data model, `FinanceManager` owns the in-memory list and all the logic around it (totals, search, filtering), `FileManager` handles reading and writing that list to disk, and `MainWindow` just wires the UI to `FinanceManager` and reacts to what the user does.
 
-## Planned Architecture
+## Building
 
-```
-MainWindow
-│
-├── FinanceManager
-│   ├── Add Transaction
-│   ├── Remove Transaction
-│   ├── Update Transaction
-│   ├── Calculate Balance
-│   └── Generate Statistics
-│
-├── Transaction
-│   ├── Date
-│   ├── Type
-│   ├── Category
-│   ├── Description
-│   └── Amount
-│
-└── FileManager
-    ├── Save Data
-    └── Load Data
-```
+**Requirements:**
+- Qt 6 (Widgets and Charts modules)
+- CMake 3.16+
+- A C++17-capable compiler (MSVC, MinGW, GCC, or Clang)
 
----
+**Steps:**
+
+1. Clone the repo
+2. Open the folder in Qt Creator via `CMakeLists.txt`, or configure manually:
+   ```
+   cmake -B build -S .
+   cmake --build build
+   ```
+3. Run the resulting `PersonalFinanceManager` executable
+
+> Qt Charts isn't included in a default Qt install. If CMake can't find it, open the Qt Maintenance Tool and enable the Charts component for your Qt version.
+
+## Data
+
+Transactions are stored in `data/transactions.json`, created automatically on first save. It's excluded from version control since it's personal data, not part of the codebase, so a fresh clone starts with an empty ledger.
 
 ## Roadmap
 
-### Phase 1
-- [x] Create project
-- [x] Configure Git
-- [x] Publish to GitHub
-- [ ] Design main window
-- [ ] Create Transaction class
-
-### Phase 2
-- [ ] Add income
-- [ ] Add expenses
-- [ ] Display transactions
-- [ ] Calculate totals
-
-### Phase 3
-- [ ] Edit transactions
-- [ ] Delete transactions
-- [ ] Search transactions
-- [ ] Category filtering
-
-### Phase 4
-- [ ] Save data to JSON
-- [ ] Load data automatically
-- [ ] Charts
+- [x] Transaction model, dashboard, add income/expense
+- [x] FinanceManager, transaction history table
+- [x] Edit, delete, search, filter
+- [x] JSON persistence, statistics, expense chart
+- [x] App icon
 - [ ] Dark mode
 
----
+## Screenshots
 
-## Skills Demonstrated
+<!--
+Add screenshots here once you've taken them. Suggested shots:
+- Main dashboard with a few sample transactions
+- The Add Income / Add Expense dialog
+- Search or filter in action
+- The Statistics dialog with the pie chart
+-->
 
-This project demonstrates:
+## License
 
-- Object-Oriented Programming
-- Qt Widgets
-- Modern C++
-- GUI Development
-- File Handling
-- Data Structures
-- CMake
-- Version Control with Git
-- Software Design Principles
-
----
-
-## Future Improvements
-
-- Budget planning
-- Spending reports
-- Pie charts
-- Monthly analytics
-- Export to CSV
-- Export to PDF
-- Password protection
-- Multiple user profiles
-
----
-
-## Author
-
-**Brandon**
-
-GitHub: https://github.com/BranTK-dev
+This project is available for personal and educational use. Feel free to fork it and adapt it for your own portfolio.
